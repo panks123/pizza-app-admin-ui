@@ -27,15 +27,23 @@ const LoginPage = () => {
     enabled: false
   })
 
-  const { mutate, isPending, isError, error } = useMutation({
+  const { mutate: logoutMutate } = useMutation({
+    mutationKey: ['login'],
+    mutationFn: logoutApi,
+    onSuccess: async () => {
+      logout();
+      return;
+    }
+  })
+
+  const { mutate: loginMutate, isPending, isError, error } = useMutation({
     mutationKey: ['login'],
     mutationFn: loginUser,
     onSuccess: async () => {
       const selfUserDataPr = await refetch();
       const user = selfUserDataPr.data;
       if(!isAllowed(user)) {
-        await logoutApi();
-        logout();
+        logoutMutate();
         return;
       }
       setUser(user);
@@ -62,8 +70,7 @@ const LoginPage = () => {
             <Form
               initialValues={{ remember: true }}
               onFinish={(values) =>{
-                mutate({ email: values.username, password: values.password })
-                console.log("VALUES", values)
+                loginMutate({ email: values.username, password: values.password })
               }}
             >
               {
