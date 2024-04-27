@@ -19,7 +19,7 @@ const getSelf = async () => {
 
 const LoginPage = () => {
   const { isAllowed } = usePermisson();
-  const { setUser, logout } = useAuthStore();
+  const { setUser, logout: logoutFromStore } = useAuthStore();
 
   const { refetch } = useQuery({
     queryKey: ["self"],
@@ -31,7 +31,7 @@ const LoginPage = () => {
     mutationKey: ['login'],
     mutationFn: logoutApi,
     onSuccess: async () => {
-      logout();
+      logoutFromStore();
       return;
     }
   })
