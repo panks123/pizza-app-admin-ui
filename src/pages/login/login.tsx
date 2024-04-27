@@ -28,7 +28,7 @@ const LoginPage = () => {
   })
 
   const { mutate: logoutMutate } = useMutation({
-    mutationKey: ['login'],
+    mutationKey: ['logout'],
     mutationFn: logoutApi,
     onSuccess: async () => {
       logoutFromStore();
