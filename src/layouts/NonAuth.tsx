@@ -9,7 +9,6 @@ const NonAuth = () => {
   }
   return (
     <div>
-      <h1>NonAuth Layout</h1>
       <Outlet />
     </div>
   )
