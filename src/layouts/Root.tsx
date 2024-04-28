@@ -4,6 +4,7 @@ import { Outlet } from "react-router-dom";
 import { self } from "../http/api";
 import { useAuthStore } from "../store";
 import { usePermisson } from "../hooks/usePermission";
+import { AxiosError } from "axios";
 
 const getSelf = async () => {
     const { data } =  await self();
@@ -17,7 +18,14 @@ const Root = () => {
     const { data: userData, isLoading, refetch } = useQuery({
         queryKey: ["self"],
         queryFn: getSelf,
-        enabled: false
+        enabled: false,
+        retry: (failureCount: number, error) => {
+            if(error instanceof AxiosError && error.response?.status === 401 ) {
+                return false;
+            }
+
+            return failureCount < 3;
+        } 
     })
 
     useEffect(() => {
