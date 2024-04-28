@@ -1,52 +1,46 @@
-import { useEffect } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Outlet } from "react-router-dom";
-import { self } from "../http/api";
-import { useAuthStore } from "../store";
-import { usePermisson } from "../hooks/usePermission";
-import { AxiosError } from "axios";
+import { useEffect } from 'react';
+import { useQuery } from '@tanstack/react-query';
+import { Outlet } from 'react-router-dom';
+import { self } from '../http/api';
+import { useAuthStore } from '../store';
+import { AxiosError } from 'axios';
 
 const getSelf = async () => {
-    const { data } =  await self();
+    const { data } = await self();
     return data;
-}
+};
 
 const Root = () => {
-    const { setUser, user } = useAuthStore();
-    const { isAllowed } = usePermisson();
+    const { setUser } = useAuthStore();
 
-    const { data: userData, isLoading, refetch } = useQuery({
-        queryKey: ["self"],
+    const { data, isLoading, refetch } = useQuery({
+        queryKey: ['self'],
         queryFn: getSelf,
-        enabled: false,
         retry: (failureCount: number, error) => {
-            if(error instanceof AxiosError && error.response?.status === 401 ) {
+            if (error instanceof AxiosError && error.response?.status === 401) {
                 return false;
             }
-
             return failureCount < 3;
-        } 
-    })
+        },
+        enabled: false
+    });
 
     useEffect(() => {
-        if(!user) {
-            refetch();
-        }
-    }, [refetch, user]);
+        refetch();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [])
 
     useEffect(() => {
-        if(!user && userData && isAllowed(userData) ) {
-            setUser(userData);
+        if (data) {
+            setUser(data);
         }
-    }, [user, userData, setUser, isAllowed]);
+    }, [data, setUser]);
 
-    if(isLoading) {
-        return <div>Loading...</div>
+    if (isLoading) {
+        return <div>Loading...</div>;
     }
 
-  return (
-    <Outlet />
-  )
-}
+    return <Outlet />;
+};
 
 export default Root;
