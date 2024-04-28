@@ -43,12 +43,12 @@ const items = [
 ]
 
 const Dashboard = () => {
-  const {logout: logoutFromStore} = useAuthStore();
+  const {logout: logoutFromStore, user } = useAuthStore();
   const {
     token: { colorBgContainer },
   } = theme.useToken();
   const [collapsed, setCollapsed] = useState(false);
-  const { user } = useAuthStore();
+  // const { user } = useAuthStore();
 
   const { mutate: logoutMutate } = useMutation({
     mutationKey: ['logout'],
@@ -75,7 +75,7 @@ const Dashboard = () => {
         <Layout>
           <Header style={{ padding: "0 16px", background: colorBgContainer }}>
             <Flex gap="middle" align="start" justify="space-between">
-              <Badge text="Global" status="success"/>
+              <Badge text={user.role === "admin" ? "Admin" : user.tenant?.name} status="success"/>
               <Space size={16}>
                 <Badge dot={true}>
                   <BellFilled />
