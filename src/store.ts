@@ -8,8 +8,8 @@ interface Tenant {
 }
 export interface User {
     id: number;
-    firstname: string;
-    lastname: string;
+    firstName: string;
+    lastName: string;
     email: string;
     role: string;
     tenant?: Tenant
