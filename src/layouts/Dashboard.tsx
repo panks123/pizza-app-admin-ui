@@ -1,63 +1,36 @@
-import { useState } from "react";
-import { NavLink, Navigate, Outlet } from "react-router-dom";
+import { useMemo, useState } from "react";
+import {  Navigate, Outlet, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store";
-import Icon, { BellFilled} from "@ant-design/icons";
+import { BellFilled} from "@ant-design/icons";
 import { Avatar, Badge, Dropdown, Flex, Layout, Menu, Space, theme } from "antd";
 import Logo from "../components/icons/Logo";
-import UserIcon from "../components/icons/UserIcon";
-import { FoodIcon } from "../components/icons/FoodIcon";
-import BasketIcon from "../components/icons/BasketIcon";
-import GiftIcon from "../components/icons/GiftIcon";
-import DashboardIcon from "../components/icons/DashboardIcon";
 import { useMutation } from "@tanstack/react-query";
 import {logout as logoutApi} from "../http/api";
+import { getRoleBasedNavItems } from "./navItems";
 
 const { Sider, Header, Content, Footer } = Layout;
 
-const items = [
-  {
-    key: "/",
-    icon: <Icon component={DashboardIcon}/>,
-    label: <NavLink to="/">Dashboard</NavLink>
-  },
-  {
-    key: "/users",
-    icon: <Icon component={UserIcon}/>,
-    label: <NavLink to="/users">Users</NavLink>
-  },
-  {
-    key: "/restaurants",
-    icon: <Icon component={FoodIcon}/>,
-    label: <NavLink to="/restaurants">Restaurants</NavLink>
-  },
-  {
-    key: "/products",
-    icon: <Icon component={BasketIcon}/>,
-    label: <NavLink to="/products">Products</NavLink>
-  },
-  {
-    key: "/promos",
-    icon: <Icon component={GiftIcon}/>,
-    label: <NavLink to="/promos">Promos</NavLink>
-  },
-]
-
 const Dashboard = () => {
   const {logout: logoutFromStore, user } = useAuthStore();
+  const navigate = useNavigate();
   const {
     token: { colorBgContainer },
   } = theme.useToken();
   const [collapsed, setCollapsed] = useState(false);
-  // const { user } = useAuthStore();
 
   const { mutate: logoutMutate } = useMutation({
     mutationKey: ['logout'],
     mutationFn: logoutApi,
     onSuccess: async () => {
       logoutFromStore();
+      navigate("/auth/login", {  replace: true });
       return;
     }
   })
+
+  const navItems = useMemo(() => {
+    return getRoleBasedNavItems(user?.role as string);
+  }, [user])
 
   if(user === null){
     return <Navigate to="/auth/login" replace/>
@@ -70,7 +43,7 @@ const Dashboard = () => {
           <div className="logo">
             <Logo/>
           </div>
-          <Menu theme="light" defaultSelectedKeys={['/']} mode="inline" items={items} />
+          <Menu theme="light" defaultSelectedKeys={['/']} mode="inline" items={navItems} />
         </Sider>
         <Layout>
           <Header style={{ padding: "0 16px", background: colorBgContainer }}>
