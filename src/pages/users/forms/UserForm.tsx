@@ -11,8 +11,6 @@ const UserForm = () => {
         }
     })
 
-    console.log("Tenants", tenants)
-
   return (
     <Row>
         <Col span={24}>
@@ -30,7 +28,7 @@ const UserForm = () => {
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item label="Last Name" name="LastName" rules={[
+                            <Form.Item label="Last Name" name="lastName" rules={[
                                 {
                                     required: true,
                                     message: "Required field!"
@@ -76,7 +74,7 @@ const UserForm = () => {
                 <Card title= "Restaurant & Role info" >
                     <Row gutter={18}>
                         <Col span={12}>
-                            <Form.Item label="Restaurant" name="tenatId" rules={[
+                            <Form.Item label="Restaurant" name="tenantId" rules={[
                                 {
                                     required: true,
                                     message: "Required field!"
@@ -85,7 +83,7 @@ const UserForm = () => {
                                 <Select size="large" style={{ width: "100%" }} placeholder="Select restaurant" onChange={() => {}} >
                                     {
                                         tenants?.map((tenant: Tenant) => (
-                                            <Select.Option value={tenant.id}>{tenant.name}</Select.Option>
+                                            <Select.Option key={tenant.id} value={tenant.id}>{tenant.name}</Select.Option>
                                         ))
                                     }
                                 </Select>

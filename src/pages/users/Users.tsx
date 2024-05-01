@@ -1,9 +1,9 @@
 import { Breadcrumb, Button, Drawer, Form, Space, Table, theme } from "antd";
 import { RightOutlined, PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { getUsers } from "../../http/api";
-import { User } from "../../types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { createUser, getUsers } from "../../http/api";
+import { User, UserPayload } from "../../types";
 import UsersFilter from "./UsersFilter";
 import { useState } from "react";
 import UserForm from "./forms/UserForm";
@@ -42,6 +42,18 @@ const Users = () => {
   const { token: { colorBgLayout } } = theme.useToken();
   const [open,setOpen] = useState(false);
 
+  const [form] = Form.useForm();
+  const queryClient = useQueryClient();
+  const { mutate : userMutate } = useMutation({
+    mutationKey: ["users"],
+    mutationFn: async (data: UserPayload) =>  createUser(data).then((res) => res.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      toggleDrawer();
+      form.resetFields();
+    }
+  })
+
   const { data: users, isLoading, isError, error } = useQuery({
     queryKey: ["users"],
     queryFn: () => {
@@ -51,6 +63,12 @@ const Users = () => {
 
   const onFilterChange = (filterName: "status" | "role" | "search", filterValue?: string) => {
     console.log({filterName, filterValue})
+  }
+
+  const handleUserFormSubmit = async () => {
+    await form.validateFields();
+    const createUserPayload = form.getFieldsValue();
+    userMutate(createUserPayload);
   }
 
   const toggleDrawer = () => {
@@ -79,12 +97,15 @@ const Users = () => {
         styles={{ body: { background: colorBgLayout }} }
         extra= {
           <Space>
-            <Button>Cancel</Button>
-            <Button type="primary">Save</Button>
+            <Button onClick={() => {
+              form.resetFields();
+              toggleDrawer();
+            }}>Cancel</Button>
+            <Button type="primary" onClick={handleUserFormSubmit}>Save</Button>
           </Space>
         }
       >
-        <Form layout="vertical">
+        <Form layout="vertical" form={form}>
           <UserForm/>
         </Form>
       </Drawer>
