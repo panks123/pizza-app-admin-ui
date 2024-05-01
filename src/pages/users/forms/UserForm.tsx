@@ -20,17 +20,36 @@ const UserForm = () => {
                 <Card title= "Basic info" >
                     <Row gutter={18}>
                         <Col span={12}>
-                            <Form.Item label="First Name" name="firstName" >
+                            <Form.Item label="First Name" name="firstName" rules={[
+                                {
+                                    required: true,
+                                    message: "Required field!"
+                                }
+                            ]}>
                                 <Input size="large"/>
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item label="Last Name" name="LastName" >
+                            <Form.Item label="Last Name" name="LastName" rules={[
+                                {
+                                    required: true,
+                                    message: "Required field!"
+                                }
+                            ]}>
                                 <Input size="large"/>
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item label="Email" name="email" >
+                            <Form.Item label="Email" name="email" rules={[
+                                {
+                                    required: true,
+                                    message: "Required field!"
+                                },
+                                {
+                                    type: "email",
+                                    message: "Invalid email format!"
+                                }
+                            ]}>
                                 <Input size="large"/>
                             </Form.Item>
                         </Col>
@@ -39,7 +58,16 @@ const UserForm = () => {
                 <Card title= "Security info" >
                     <Row gutter={18}>
                         <Col span={12}>
-                            <Form.Item label="Password" name="password" >
+                            <Form.Item label="Password" name="password" rules={[
+                                {
+                                    required: true,
+                                    message: "Required field!"
+                                },
+                                {
+                                     min: 8,
+                                     message: "Should be minimum 8 characters long"
+                                }
+                            ]}>
                                 <Input size="large"/>
                             </Form.Item>
                         </Col>
@@ -48,7 +76,12 @@ const UserForm = () => {
                 <Card title= "Restaurant & Role info" >
                     <Row gutter={18}>
                         <Col span={12}>
-                            <Form.Item label="Restaurant" name="tenatId" >
+                            <Form.Item label="Restaurant" name="tenatId" rules={[
+                                {
+                                    required: true,
+                                    message: "Required field!"
+                                }
+                            ]}>
                                 <Select size="large" style={{ width: "100%" }} placeholder="Select restaurant" onChange={() => {}} >
                                     {
                                         tenants?.map((tenant: Tenant) => (
@@ -59,7 +92,12 @@ const UserForm = () => {
                             </Form.Item>
                         </Col>
                         <Col span={12}>
-                            <Form.Item label="Role" name="role" >
+                            <Form.Item label="Role" name="role" rules={[
+                                {
+                                    required: true,
+                                    message: "Required field!"
+                                }
+                            ]}>
                                 <Select size="large" style={{ width: "100%" }} placeholder="Select role" onChange={() => {}} >
                                     <Select.Option value="admin">Admin</Select.Option>
                                     <Select.Option value="manager">Manager</Select.Option>
