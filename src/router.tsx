@@ -14,16 +14,16 @@ const privateRoutes = [
     {
         path: "users",
         element: <Users />,
-        allowedRoles: [UserRole.ADMIN]
+        allowedroles: [UserRole.ADMIN]
     },
     {
         path: "categories",
         element: <div>Categories</div>,
-        allowedRoles: [UserRole.ADMIN, UserRole.MANAGER]
+        allowedroles: [UserRole.ADMIN, UserRole.MANAGER]
     }
 ]
 const getRoleBasedPrivateRoutes = (userRole: string) => {
-    const routes = privateRoutes.filter((route) => route.allowedRoles.includes(userRole));
+    const routes = privateRoutes.filter((route) => route.allowedroles.includes(userRole));
     return routes;
 }
 
