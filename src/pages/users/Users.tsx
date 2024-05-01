@@ -1,4 +1,4 @@
-import { Breadcrumb, Button, Drawer, Space, Table } from "antd";
+import { Breadcrumb, Button, Drawer, Form, Space, Table, theme } from "antd";
 import { RightOutlined, PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
@@ -6,6 +6,7 @@ import { getUsers } from "../../http/api";
 import { User } from "../../types";
 import UsersFilter from "./UsersFilter";
 import { useState } from "react";
+import UserForm from "./forms/UserForm";
 
 const columns = [
   {
@@ -38,6 +39,7 @@ const columns = [
 ]
 
 const Users = () => {
+  const { token: { colorBgLayout } } = theme.useToken();
   const [open,setOpen] = useState(false);
 
   const { data: users, isLoading, isError, error } = useQuery({
@@ -74,6 +76,7 @@ const Users = () => {
         onClose={toggleDrawer}
         open={open}
         destroyOnClose={true}
+        styles={{ body: { background: colorBgLayout }} }
         extra= {
           <Space>
             <Button>Cancel</Button>
@@ -81,9 +84,9 @@ const Users = () => {
           </Space>
         }
       >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+        <Form layout="vertical">
+          <UserForm/>
+        </Form>
       </Drawer>
     </Space>
     </>
