@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { getUsers } from "../../http/api";
 import { User } from "../../types";
+import UsersFilter from "./UsersFilter";
 
 const columns = [
   {
@@ -44,7 +45,9 @@ const Users = () => {
     }
   })
 
-  console.log({users, isLoading, isError, error })
+  const onFilterChange = (filterName: "status" | "role" | "search", filterValue?: string) => {
+    console.log({filterName, filterValue})
+  } 
 
   return (
     <>
@@ -52,7 +55,8 @@ const Users = () => {
       <Breadcrumb items={[{ title: <Link to="/">Dashboard</Link> }, { title: "Users" }]} separator={<RightOutlined />}/>
       {isLoading && <div>Loading...</div>}
       {isError && <div>{error.message}</div>}
-      <Table columns={columns} dataSource={users}/>
+      <UsersFilter onFilterChange={onFilterChange}/>
+      <Table columns={columns} dataSource={users} rowKey={"id"}/>
     </Space>
     </>
   );
