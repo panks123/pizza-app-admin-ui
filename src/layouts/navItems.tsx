@@ -5,7 +5,7 @@ import { FoodIcon } from "../components/icons/FoodIcon";
 import BasketIcon from "../components/icons/BasketIcon";
 import GiftIcon from "../components/icons/GiftIcon";
 import DashboardIcon from "../components/icons/DashboardIcon";
-import { UserRole } from "../config";
+import { UserRole } from "../constants";
 
 const items = [
     {

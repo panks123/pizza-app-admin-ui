@@ -6,7 +6,7 @@ import Dashboard from "./layouts/Dashboard";
 import NonAuth from "./layouts/NonAuth";
 import Root from "./layouts/Root";
 import Users from "./pages/users/Users";
-import { UserRole } from "./config";
+import { UserRole } from "./constants";
 import { useAuthStore } from "./store";
 import NotFound from "./pages/notFound/NotFound";
 import { useMemo } from "react";
