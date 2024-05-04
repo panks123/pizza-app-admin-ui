@@ -25,3 +25,8 @@ export type Tenant = {
     name: string;
     address: string;
 }
+
+export type TenantPayload = {
+    name: string;
+    address: string;
+}

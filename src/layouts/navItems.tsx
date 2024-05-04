@@ -24,7 +24,7 @@ const items = [
       key: "/restaurants",
       icon: <Icon component={FoodIcon}/>,
       label: <NavLink to="/restaurants">Restaurants</NavLink>,
-      allowedroles: [UserRole.ADMIN, UserRole.MANAGER]
+      allowedroles: [UserRole.ADMIN]
     },
     {
       key: "/products",

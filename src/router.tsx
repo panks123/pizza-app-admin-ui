@@ -1,6 +1,7 @@
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/login/login";
+import Tenants from "./pages/tenants/Tenants";
 import Dashboard from "./layouts/Dashboard";
 import NonAuth from "./layouts/NonAuth";
 import Root from "./layouts/Root";
@@ -17,9 +18,9 @@ const privateRoutes = [
         allowedroles: [UserRole.ADMIN]
     },
     {
-        path: "categories",
-        element: <div>Categories</div>,
-        allowedroles: [UserRole.ADMIN, UserRole.MANAGER]
+        path: "restaurants",
+        element: <Tenants />,
+        allowedroles: [UserRole.ADMIN]
     }
 ]
 const getRoleBasedPrivateRoutes = (userRole: string) => {
