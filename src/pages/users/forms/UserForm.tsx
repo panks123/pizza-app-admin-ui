@@ -7,7 +7,8 @@ const UserForm = () => {
     const { data : tenants }= useQuery({
         queryKey: ["tenants"],
         queryFn: () => {
-            return getTenants().then((res) => res.data);
+            // TODO: make this dynamic, like search for tenants in the input
+            return getTenants(`perPage=100&currentPage=1`).then((res) => res.data);
         }
     })
 
@@ -82,7 +83,7 @@ const UserForm = () => {
                             ]}>
                                 <Select size="large" style={{ width: "100%" }} placeholder="Select restaurant" onChange={() => {}} >
                                     {
-                                        tenants?.map((tenant: Tenant) => (
+                                        tenants?.data.map((tenant: Tenant) => (
                                             <Select.Option key={tenant.id} value={tenant.id}>{tenant.name}</Select.Option>
                                         ))
                                     }
