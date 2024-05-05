@@ -32,7 +32,7 @@ export type TenantPayload = {
     address: string;
 }
 
-export type UserFilterFormData = {
+export type FilterFormData = {
     name: string[],
     value?: string;
 }

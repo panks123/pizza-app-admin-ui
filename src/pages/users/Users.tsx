@@ -3,7 +3,7 @@ import { RightOutlined, PlusOutlined, LoadingOutlined } from "@ant-design/icons"
 import { Link } from "react-router-dom";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createUser, getUsers } from "../../http/api";
-import { User, UserFilterFormData, UserPayload } from "../../types";
+import { User, FilterFormData, UserPayload } from "../../types";
 import UsersFilter from "./UsersFilter";
 import { useMemo, useState } from "react";
 import UserForm from "./forms/UserForm";
@@ -87,7 +87,7 @@ const Users = () => {
     }, 600);
   }, []);
 
-  const onFilterChange = (userFilterFormData: UserFilterFormData[]) => {
+  const onFilterChange = (userFilterFormData: FilterFormData[]) => {
     const changedFilterFields = userFilterFormData.map((item) => ({
       [item.name[0]] : item.value
     })).reduce((acc, item) => ({...acc, ...item}), {});

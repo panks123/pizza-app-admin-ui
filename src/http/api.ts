@@ -6,5 +6,5 @@ export const self = () => api.get("/auth/self");
 export const logout = () => api.post("/auth/logout");
 export const getUsers = (queryString: string) => api.get(`/users?${queryString}`);
 export const createUser = (user: UserPayload) => api.post("/users", user);
-export const getTenants = () => api.get("/tenants");
+export const getTenants = (queryString: string) => api.get(`/tenants?${queryString}`);
 export const createTenant = (tenant: TenantPayload) => api.post("/tenants", tenant);
