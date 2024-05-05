@@ -5,9 +5,10 @@ import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tansta
 import { createUser, getUsers } from "../../http/api";
 import { User, UserFilterFormData, UserPayload } from "../../types";
 import UsersFilter from "./UsersFilter";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import UserForm from "./forms/UserForm";
 import { PER_PAGE } from "../../constants";
+import { debounce } from "lodash";
 
 const columns = [
   {
@@ -37,6 +38,16 @@ const columns = [
     dataIndex: "role",
     key: "role"
   },
+  {
+    title: "Tenant",
+    dataIndex: "tenant",
+    key: "tenant",
+    render: (_text: string, record: User) => {
+      return (
+        <div>{record.tenant?.name}</div>
+      )
+    }
+  },
 ]
 
 const Users = () => {
@@ -65,19 +76,28 @@ const Users = () => {
     queryFn: () => {
       const filterdQyeryParams = Object.fromEntries(Object.entries(queryParams).filter((item) => !!item[1]));
       const queryString = new URLSearchParams(filterdQyeryParams as unknown as Record<string, string>).toString()
-      console.log({queryString})
       return getUsers(queryString).then((res) => res.data );
     },
     placeholderData: keepPreviousData
   })
 
+  const debounceQUpdate = useMemo(() => {
+    return debounce((value: string | undefined) => {
+      setQueryParams((prev) => ({ ...prev, q: value, currentPage: 1 }))
+    }, 600);
+  }, []);
+
   const onFilterChange = (userFilterFormData: UserFilterFormData[]) => {
-    console.log(userFilterFormData)
     const changedFilterFields = userFilterFormData.map((item) => ({
       [item.name[0]] : item.value
     })).reduce((acc, item) => ({...acc, ...item}), {});
 
-    setQueryParams((prev) => ({...prev, ...changedFilterFields}))
+    if('q' in changedFilterFields) {
+      debounceQUpdate(changedFilterFields.q);
+    }
+    else {
+      setQueryParams((prev) => ({...prev, ...changedFilterFields, currentPage: 1}));
+    }
   }
 
   const handleUserFormSubmit = async () => {
@@ -118,6 +138,9 @@ const Users = () => {
               ...prev,
               currentPage: page,
             }))
+          },
+          showTotal: (total , range) => {
+            return <div>Showing <b>{range[0]}-{range[1]}</b> of <b>{total}</b> items</div>
           }
         }}
       />
