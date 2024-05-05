@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import {  Navigate, Outlet, useNavigate } from "react-router-dom";
+import {  Navigate, Outlet, useLocation, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../store";
 import { BellFilled} from "@ant-design/icons";
 import { Avatar, Badge, Dropdown, Flex, Layout, Menu, Space, theme } from "antd";
@@ -13,6 +13,7 @@ const { Sider, Header, Content, Footer } = Layout;
 const Dashboard = () => {
   const {logout: logoutFromStore, user } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
   const {
     token: { colorBgContainer },
   } = theme.useToken();
@@ -33,7 +34,7 @@ const Dashboard = () => {
   }, [user])
 
   if(user === null){
-    return <Navigate to="/auth/login" replace/>
+    return <Navigate to={`/auth/login?returnTo=${location.pathname}`} replace/>
   }
 
   return (

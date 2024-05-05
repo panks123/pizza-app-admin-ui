@@ -1,14 +1,15 @@
 import { Breadcrumb, Button, Drawer, Flex, Form, Space, Spin, Table, Typography, theme } from "antd";
 import { RightOutlined, PlusOutlined, LoadingOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createUser, getUsers } from "../../http/api";
 import { User, FilterFormData, UserPayload } from "../../types";
 import UsersFilter from "./UsersFilter";
 import { useMemo, useState } from "react";
 import UserForm from "./forms/UserForm";
-import { PER_PAGE } from "../../constants";
+import { PER_PAGE, UserRole } from "../../constants";
 import { debounce } from "lodash";
+import { useAuthStore } from "../../store";
 
 const columns = [
   {
@@ -57,7 +58,7 @@ const Users = () => {
     perPage: PER_PAGE,
     currentPage: 1
   })
-
+  const { user } = useAuthStore();
   const [form] = Form.useForm();
   const [filterForm] = Form.useForm();
   const queryClient = useQueryClient();
@@ -108,6 +109,10 @@ const Users = () => {
 
   const toggleDrawer = () => {
     setOpen(!open);
+  }
+
+  if (user?.role !== UserRole.ADMIN) {
+      return <Navigate to="/" replace={true} />;
   }
 
   return (
