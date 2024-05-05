@@ -44,7 +44,7 @@ const Dashboard = () => {
           <div className="logo">
             <Logo/>
           </div>
-          <Menu theme="light" defaultSelectedKeys={['/']} mode="inline" items={navItems} />
+          <Menu theme="light" defaultSelectedKeys={[location.pathname]} mode="inline" items={navItems} />
         </Sider>
         <Layout>
           <Header style={{ padding: "0 16px", background: colorBgContainer }}>
