@@ -30,3 +30,8 @@ export type TenantPayload = {
     name: string;
     address: string;
 }
+
+export type UserFilterFormData = {
+    name: string[],
+    value?: string;
+}

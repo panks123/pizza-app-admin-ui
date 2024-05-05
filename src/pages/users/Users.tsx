@@ -3,7 +3,7 @@ import { RightOutlined, PlusOutlined, LoadingOutlined } from "@ant-design/icons"
 import { Link } from "react-router-dom";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createUser, getUsers } from "../../http/api";
-import { User, UserPayload } from "../../types";
+import { User, UserFilterFormData, UserPayload } from "../../types";
 import UsersFilter from "./UsersFilter";
 import { useState } from "react";
 import UserForm from "./forms/UserForm";
@@ -48,6 +48,7 @@ const Users = () => {
   })
 
   const [form] = Form.useForm();
+  const [filterForm] = Form.useForm();
   const queryClient = useQueryClient();
   const { mutate : userMutate } = useMutation({
     mutationKey: ["users"],
@@ -62,15 +63,21 @@ const Users = () => {
   const { data: users, isFetching, isError, error } = useQuery({
     queryKey: ["users", queryParams],
     queryFn: () => {
-      const queryString = new URLSearchParams(queryParams as unknown as Record<string, string>).toString()
+      const filterdQyeryParams = Object.fromEntries(Object.entries(queryParams).filter((item) => !!item[1]));
+      const queryString = new URLSearchParams(filterdQyeryParams as unknown as Record<string, string>).toString()
       console.log({queryString})
       return getUsers(queryString).then((res) => res.data );
     },
     placeholderData: keepPreviousData
   })
 
-  const onFilterChange = (filterName: "status" | "role" | "search", filterValue?: string) => {
-    console.log({filterName, filterValue})
+  const onFilterChange = (userFilterFormData: UserFilterFormData[]) => {
+    console.log(userFilterFormData)
+    const changedFilterFields = userFilterFormData.map((item) => ({
+      [item.name[0]] : item.value
+    })).reduce((acc, item) => ({...acc, ...item}), {});
+
+    setQueryParams((prev) => ({...prev, ...changedFilterFields}))
   }
 
   const handleUserFormSubmit = async () => {
@@ -91,11 +98,13 @@ const Users = () => {
         {isFetching && <Spin indicator={<LoadingOutlined style={{ fontSize: 22 }} spin />} />}
         {isError && <Typography.Text type="danger">{error.message}</Typography.Text>}
       </Flex>
-      <UsersFilter onFilterChange={onFilterChange}>
-        <Button icon={<PlusOutlined />} type="primary" onClick={toggleDrawer}>
-          Create user
-        </Button>
-      </UsersFilter>
+      <Form onFieldsChange={onFilterChange} form={filterForm}>
+        <UsersFilter>
+          <Button icon={<PlusOutlined />} type="primary" onClick={toggleDrawer}>
+            Create user
+          </Button>
+        </UsersFilter>
+      </Form>
       <Table 
         columns={columns} 
         dataSource={users?.data} 
