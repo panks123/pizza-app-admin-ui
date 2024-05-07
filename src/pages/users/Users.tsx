@@ -2,10 +2,10 @@ import { Breadcrumb, Button, Drawer, Flex, Form, Space, Spin, Table, Typography,
 import { RightOutlined, PlusOutlined, LoadingOutlined } from "@ant-design/icons";
 import { Link, Navigate } from "react-router-dom";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createUser, getUsers } from "../../http/api";
+import { createUser, getUsers, updateUser } from "../../http/api";
 import { User, FilterFormData, UserPayload } from "../../types";
 import UsersFilter from "./UsersFilter";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState } from "react";
 import UserForm from "./forms/UserForm";
 import { PER_PAGE, UserRole } from "../../constants";
 import { debounce } from "lodash";
@@ -58,6 +58,7 @@ const Users = () => {
     perPage: PER_PAGE,
     currentPage: 1
   })
+  const currentEditingUserRef = useRef<User | null>(null);
   const { user } = useAuthStore();
   const [form] = Form.useForm();
   const [filterForm] = Form.useForm();
@@ -69,6 +70,14 @@ const Users = () => {
       queryClient.invalidateQueries({ queryKey: ["users"] });
       toggleDrawer();
       form.resetFields();
+    }
+  })
+  const { mutate : updateUserMutate } = useMutation({
+    mutationKey: ["update-user"],
+    mutationFn: async (data: UserPayload) =>  updateUser(data, currentEditingUserRef.current!.id).then((res) => res.data),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["users"] });
+      toggleDrawer();
     }
   })
 
@@ -103,12 +112,30 @@ const Users = () => {
 
   const handleUserFormSubmit = async () => {
     await form.validateFields();
-    const createUserPayload = form.getFieldsValue();
-    userMutate(createUserPayload);
+    const isEditMode = !!currentEditingUserRef.current;
+    if(isEditMode) {
+      const updateUserPayload = form.getFieldsValue();
+      updateUserMutate(updateUserPayload);
+    }
+    else {
+      console.log("CREAATE")
+      const createUserPayload = form.getFieldsValue();
+      userMutate(createUserPayload);
+    }
   }
 
   const toggleDrawer = () => {
+    if(open && currentEditingUserRef.current) {
+      currentEditingUserRef.current = null;
+      form.resetFields();
+    }
     setOpen(!open);
+  }
+
+  const onEdit = (userToEdit: User) => {
+    currentEditingUserRef.current = userToEdit;
+    toggleDrawer();
+    form.setFieldsValue({...userToEdit, tenantId: userToEdit.tenant?.id});
   }
 
   if (user?.role !== UserRole.ADMIN) {
@@ -131,7 +158,16 @@ const Users = () => {
         </UsersFilter>
       </Form>
       <Table 
-        columns={columns} 
+        columns={[...columns, {
+          title: "Actions",
+          render: (_: string, record: User) => {
+            return (
+              <Space>
+                <Button type="link" onClick={() => onEdit(record)}>Edit</Button>
+              </Space>
+            )
+          }
+        }]} 
         dataSource={users?.data} 
         rowKey={"id"}
         pagination={{
@@ -151,7 +187,7 @@ const Users = () => {
       />
 
       <Drawer
-        title="Create User"
+        title={ !currentEditingUserRef.current ? "Create User" : "Modify User"}
         width={540}
         onClose={toggleDrawer}
         open={open}
@@ -168,7 +204,7 @@ const Users = () => {
         }
       >
         <Form layout="vertical" form={form}>
-          <UserForm/>
+          <UserForm isEditMode = {!!currentEditingUserRef.current}/>
         </Form>
       </Drawer>
     </Space>

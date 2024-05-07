@@ -1,5 +1,5 @@
 import { Breadcrumb, Button, Drawer, Flex, Form, Space, Spin, Table, Typography, theme } from "antd";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { RightOutlined, PlusOutlined, LoadingOutlined } from "@ant-design/icons";
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createTenant, getTenants } from "../../http/api";
@@ -7,8 +7,9 @@ import { useMemo, useState } from "react";
 import TenantForm from "./forms/TenantForm";
 import TenantFilter from "./forms/TenantFilter";
 import { FilterFormData, TenantPayload } from "../../types";
-import { PER_PAGE } from "../../constants";
+import { PER_PAGE, UserRole } from "../../constants";
 import { debounce } from "lodash";
+import { useAuthStore } from "../../store";
 
 const columns = [
     {
@@ -30,6 +31,7 @@ const columns = [
 
 const Tenants = () => {
     const { token: { colorBgLayout } } = theme.useToken();
+    const { user } = useAuthStore();
     const queryClient = useQueryClient();
     const [tenantForm] = Form.useForm();
     const [open, setOpen] = useState(false);
@@ -86,6 +88,10 @@ const Tenants = () => {
         const createTenantPayload = form.getFieldsValue();
         tenantMutate(createTenantPayload);
       }
+
+      if (user?.role !== UserRole.ADMIN) {
+        return <Navigate to="/" replace={true} />;
+    }
 
   return (
     <>

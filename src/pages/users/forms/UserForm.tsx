@@ -3,7 +3,7 @@ import { Card, Col, Form, Input, Row, Select, Space } from "antd"
 import { getTenants } from "../../../http/api";
 import { Tenant } from "../../../types";
 
-const UserForm = () => {
+const UserForm = ({isEditMode = false} : { isEditMode: boolean}) => {
     const { data : tenants }= useQuery({
         queryKey: ["tenants"],
         queryFn: () => {
@@ -54,24 +54,28 @@ const UserForm = () => {
                         </Col>
                     </Row>
                 </Card>
-                <Card title= "Security info" >
-                    <Row gutter={18}>
-                        <Col span={12}>
-                            <Form.Item label="Password" name="password" rules={[
-                                {
-                                    required: true,
-                                    message: "Required field!"
-                                },
-                                {
-                                     min: 8,
-                                     message: "Should be minimum 8 characters long"
-                                }
-                            ]}>
-                                <Input size="large"/>
-                            </Form.Item>
-                        </Col>
-                    </Row>
-                </Card>
+                {
+                    !isEditMode && (
+                        <Card title= "Security info" >
+                            <Row gutter={18}>
+                                <Col span={12}>
+                                    <Form.Item label="Password" name="password" rules={[
+                                        {
+                                            required: true,
+                                            message: "Required field!"
+                                        },
+                                        {
+                                            min: 8,
+                                            message: "Should be minimum 8 characters long"
+                                        }
+                                    ]}>
+                                        <Input size="large"/>
+                                    </Form.Item>
+                                </Col>
+                            </Row>
+                        </Card>
+                    ) 
+                }
                 <Card title= "Restaurant & Role info" >
                     <Row gutter={18}>
                         <Col span={12}>
