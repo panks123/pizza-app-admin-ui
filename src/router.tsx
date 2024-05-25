@@ -7,6 +7,7 @@ import NonAuth from "./layouts/NonAuth";
 import Root from "./layouts/Root";
 import Users from "./pages/users/Users";
 import NotFound from "./pages/notFound/NotFound";
+import Products from "./pages/products/Products";
 
 const privateRoutes = [
     {
@@ -16,6 +17,10 @@ const privateRoutes = [
     {
         path: "restaurants",
         element: <Tenants />,
+    },
+    {
+        path: "products",
+        element: <Products />
     }
 ];
 
