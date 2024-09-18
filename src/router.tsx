@@ -8,6 +8,7 @@ import Root from "./layouts/Root";
 import Users from "./pages/users/Users";
 import NotFound from "./pages/notFound/NotFound";
 import Products from "./pages/products/Products";
+import Orders from "./pages/orders/Orders";
 
 const privateRoutes = [
     {
@@ -21,6 +22,10 @@ const privateRoutes = [
     {
         path: "products",
         element: <Products />
+    },
+    {
+        path: "orders",
+        element: <Orders />,
     }
 ];
 

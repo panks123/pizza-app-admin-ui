@@ -3,6 +3,7 @@ import { api } from "./client";
 
 export const AUTH_SERVICE = "/api/auth";
 export const CATALOG_SERVICE = "/api/catalog";
+export const ORDER_SERVICE = "/api/order";
 
 // auth service
 export const login = (credentials: Credentials) => api.post(`${AUTH_SERVICE}/auth/login`, credentials);
@@ -13,6 +14,7 @@ export const createUser = (user: UserPayload) => api.post(`${AUTH_SERVICE}/users
 export const updateUser = (user: UserPayload, userId: number) => api.patch(`${AUTH_SERVICE}/users/${userId}`, user);
 export const getTenants = (queryString: string) => api.get(`${AUTH_SERVICE}/tenants?${queryString}`);
 export const createTenant = (tenant: TenantPayload) => api.post(`${AUTH_SERVICE}/tenants`, tenant);
+export const getOrders = (queryString: string) => api.get(`${ORDER_SERVICE}/orders?${queryString}`);
 
 // catalog service
 export const getCategories = () => api.get(`${CATALOG_SERVICE}/categories`);

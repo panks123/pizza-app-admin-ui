@@ -6,12 +6,25 @@ import BasketIcon from "../components/icons/BasketIcon";
 import GiftIcon from "../components/icons/GiftIcon";
 import DashboardIcon from "../components/icons/DashboardIcon";
 import { UserRole } from "../constants";
+import { BarChartIcon } from "../components/icons/BarChart";
 
 const items = [
     {
       key: "/",
       icon: <Icon component={DashboardIcon}/>,
       label: <NavLink to="/">Dashboard</NavLink>,
+      allowedroles: [UserRole.ADMIN, UserRole.MANAGER]
+    },
+    {
+      key: "/orders",
+      icon: <Icon component={BarChartIcon}/>,
+      label: <NavLink to="/orders">Orders</NavLink>,
+      allowedroles: [UserRole.ADMIN, UserRole.MANAGER]
+    },
+    {
+      key: "/products",
+      icon: <Icon component={BasketIcon}/>,
+      label: <NavLink to="/products">Products</NavLink>,
       allowedroles: [UserRole.ADMIN, UserRole.MANAGER]
     },
     {
@@ -25,12 +38,6 @@ const items = [
       icon: <Icon component={FoodIcon}/>,
       label: <NavLink to="/restaurants">Restaurants</NavLink>,
       allowedroles: [UserRole.ADMIN]
-    },
-    {
-      key: "/products",
-      icon: <Icon component={BasketIcon}/>,
-      label: <NavLink to="/products">Products</NavLink>,
-      allowedroles: [UserRole.ADMIN, UserRole.MANAGER]
     },
     {
       key: "/promos",

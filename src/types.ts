@@ -5,6 +5,7 @@ export type Credentials = {
 
 export type User = {
     id: number;
+    _id: string;
     email: string;
     firstName: string;
     lastName: string;
@@ -77,3 +78,61 @@ export type Product = {
 }
 export type ImageFileType = { file: File };
 export type CreateProductData = Product & { image : ImageFileType }
+
+export enum PaymentMode {
+    CARD = "card",
+    CASH = "cash",
+}
+
+export enum OrderStatus {
+    RECIEVED = "received",
+    CONFIRMED = "confirmed",
+    PREPARED = "prepared",
+    OUT_FOR_DELIVERY = "out_for_delivery",
+    DELIVERED = "delivered",
+    CANCELLED = "cancelled",
+}
+
+export enum PaymentStatus {
+    PENDING = "pending",
+    PAID = "paid",
+    FAILED = "failed",
+}
+
+export type Topping =  {
+    _id: string;
+    name: string;
+    image: string;
+    price: number;
+    isAvailable: boolean;
+};
+
+export interface CartItem
+  extends Pick<Product, "_id" | "name" | "image" | "priceConfiguration"> {
+  chosenConfiguration: {
+    priceConfiguration: {
+      [key: string]: string;
+    };
+    selectedToppings: Topping[];
+  };
+  qty: number;
+  hash?: string;
+}
+
+export interface Order {
+    _id: string;
+    cart: CartItem[];
+    customerInfo: User;
+    total: number;
+    discount: number;
+    taxes: number;
+    deliveryCharges: number;
+    address: string;
+    tenantId: string;
+    comment: string;
+    orderStatus: OrderStatus;
+    paymentMode: PaymentMode;
+    paymentStatus: PaymentStatus;
+    paymentId?: string;
+    createdAt: string;
+}

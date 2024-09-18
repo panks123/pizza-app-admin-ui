@@ -71,7 +71,7 @@ const Dashboard = () => {
             <Outlet />
           </Content>
           <Footer style={{ textAlign: 'center' }}>
-            Pizza Shop ©{new Date().getFullYear()} Created by Pankaj Kumar
+            PizzoMoto ©{new Date().getFullYear()} Created by Pankaj Kumar
           </Footer>
         </Layout>
       </Layout>
