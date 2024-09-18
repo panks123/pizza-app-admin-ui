@@ -2,8 +2,11 @@ import { useQuery } from "@tanstack/react-query";
 import { Card, Col, Form, Row, Select } from "antd";
 import { getTenants } from "../../../http/api";
 import { Tenant } from "../../../types";
+import { useAuthStore } from "../../../store";
+import { UserRole } from "../../../constants";
 
 const OrderFilters = () => {
+  const {user} = useAuthStore();
   const { data: restaurants } = useQuery({
     queryKey: ["restaurants"],
     queryFn: () => {
@@ -21,21 +24,24 @@ const OrderFilters = () => {
                 <Input.Search placeholder="Search order id" allowClear />
               </Form.Item>
             </Col> */}
-            <Col span={6}>
-              <Form.Item name="tenantId">
-                <Select
-                  style={{ width: "100%" }}
-                  placeholder="Select reastaurant"
-                  allowClear
-                >
-                  {restaurants?.data.map((restaurant: Tenant) => (
-                    <Select.Option value={restaurant.id} key={restaurant.id}>
-                      {restaurant.name}
-                    </Select.Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
+            {
+              user?.role === UserRole.ADMIN &&
+              <Col span={6}>
+                <Form.Item name="tenantId">
+                  <Select
+                    style={{ width: "100%" }}
+                    placeholder="Select reastaurant"
+                    allowClear
+                  >
+                    {restaurants?.data.map((restaurant: Tenant) => (
+                      <Select.Option value={restaurant.id} key={restaurant.id}>
+                        {restaurant.name}
+                      </Select.Option>
+                    ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+            }
           </Row>
         </Col>
       </Row>
