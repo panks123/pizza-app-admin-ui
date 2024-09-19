@@ -14,7 +14,6 @@ export const createUser = (user: UserPayload) => api.post(`${AUTH_SERVICE}/users
 export const updateUser = (user: UserPayload, userId: number) => api.patch(`${AUTH_SERVICE}/users/${userId}`, user);
 export const getTenants = (queryString: string) => api.get(`${AUTH_SERVICE}/tenants?${queryString}`);
 export const createTenant = (tenant: TenantPayload) => api.post(`${AUTH_SERVICE}/tenants`, tenant);
-export const getOrders = (queryString: string) => api.get(`${ORDER_SERVICE}/orders?${queryString}`);
 
 // catalog service
 export const getCategories = () => api.get(`${CATALOG_SERVICE}/categories`);
@@ -29,3 +28,7 @@ export const updateProduct = (productId: string, product: FormData) => api.put(`
         "Content-Type": "multipart/form-data"
     }
 });
+
+// order service
+export const getOrders = (queryString: string) => api.get(`${ORDER_SERVICE}/orders?${queryString}`);
+export const getOrderDetails = (orderId: string, queryString: string) => api.get(`${ORDER_SERVICE}/orders/${orderId}?${queryString}`);

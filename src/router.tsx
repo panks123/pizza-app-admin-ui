@@ -9,6 +9,7 @@ import Users from "./pages/users/Users";
 import NotFound from "./pages/notFound/NotFound";
 import Products from "./pages/products/Products";
 import Orders from "./pages/orders/Orders";
+import OrderDetails from "./pages/orders/OrderDetails";
 
 const privateRoutes = [
     {
@@ -21,11 +22,15 @@ const privateRoutes = [
     },
     {
         path: "products",
-        element: <Products />
+        element: <Products />,
     },
     {
         path: "orders",
         element: <Orders />,
+    },
+    {
+        path: "orders/:id",
+        element: <OrderDetails />
     }
 ];
 

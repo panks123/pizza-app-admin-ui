@@ -60,7 +60,7 @@ const Orders = () => {
         <Breadcrumb
           items={[
             { title: <Link to="/">Dashboard</Link> },
-            { title: "Products" },
+            { title: "Orders" },
           ]}
           separator={<RightOutlined />}
         />
