@@ -123,10 +123,13 @@ export interface Order {
     _id: string;
     cart: CartItem[];
     customerInfo: User;
+    customerId: User;
+    price: number;
     total: number;
     discount: number;
     taxes: number;
     deliveryCharges: number;
+    couponCode: string;
     address: string;
     tenantId: string;
     comment: string;

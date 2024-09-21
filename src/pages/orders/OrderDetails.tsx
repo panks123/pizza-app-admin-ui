@@ -8,15 +8,17 @@ import {
   Row,
   Space,
   Tag,
+  Tooltip,
   Typography,
 } from "antd";
 import { Link, useParams } from "react-router-dom";
-import { RightOutlined } from "@ant-design/icons";
+import { RightOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { orderStatusColors } from "../../constants";
 import { capitalize } from "lodash";
 import { useQuery } from "@tanstack/react-query";
 import { getOrderDetails } from "../../http/api";
-import { Order } from "../../types";
+import { Order, PaymentStatus } from "../../types";
+import { format } from "date-fns";
 
 const OrderDetails = () => {
   const { id } = useParams();
@@ -26,7 +28,7 @@ const OrderDetails = () => {
     queryFn: async () => {
       const queryString = new URLSearchParams({
         fields:
-          "cart,address,paymentMode,paymentStatus,total,orderStatus,comment,paymentStatus",
+          "cart,address,paymentMode,paymentStatus,price,total,taxes,deliveryCharges,orderStatus,comment,paymentStatus,createdAt,tenantId,discount,couponCode",
       }).toString();
       return await getOrderDetails(orderId, queryString).then(
         (res) => res.data
@@ -54,14 +56,27 @@ const OrderDetails = () => {
           <Card
             title="Order Details"
             extra={
-              <Tag
-                bordered={false}
-                color={
-                  orderStatusColors[orderDetails.orderStatus] ?? "processing"
-                }
-              >
-                {capitalize(orderDetails.orderStatus)}
-              </Tag>
+              <Space size={"large"}>
+                <div>
+                  <Typography.Text type="secondary">
+                    Order Time:{" "}
+                  </Typography.Text>
+                  <Typography.Text>
+                    {format(
+                      new Date(orderDetails.createdAt),
+                      "dd/mm/yyyy hh:mm a"
+                    )}
+                  </Typography.Text>
+                </div>
+                <Tag
+                  bordered={false}
+                  color={
+                    orderStatusColors[orderDetails.orderStatus] ?? "processing"
+                  }
+                >
+                  {capitalize(orderDetails.orderStatus)}
+                </Tag>
+              </Space>
             }
           >
             <List
@@ -100,9 +115,109 @@ const OrderDetails = () => {
               }}
             />
           </Card>
+          <Card title="Payment Details" style={{ marginTop: 16 }}>
+            <Row gutter={24} style={{ padding: "0 24px" }}>
+              <Col span={12}>
+                <Space direction="vertical">
+                  <Flex style={{ flexDirection: "column" }}>
+                    <Typography.Text type="secondary">
+                      Payment Mode
+                    </Typography.Text>
+                    <Typography.Text>
+                      {orderDetails.paymentMode.toUpperCase()}
+                    </Typography.Text>
+                  </Flex>
+                  <Flex style={{ flexDirection: "column" }}>
+                    <Typography.Text type="secondary">
+                      Payment Status
+                    </Typography.Text>
+                    <Typography.Text>
+                      {capitalize(orderDetails.paymentStatus)}
+                    </Typography.Text>
+                  </Flex>
+                  {orderDetails.paymentStatus === PaymentStatus.PAID && (
+                    <Flex style={{ flexDirection: "column" }}>
+                      <Typography.Text type="secondary">
+                        Payment Ref Id:
+                      </Typography.Text>
+                      <Typography.Text>
+                        {orderDetails.paymentId}
+                      </Typography.Text>
+                    </Flex>
+                  )}
+                </Space>
+              </Col>
+              <Col span={12}>
+                <Space direction="vertical" style={{ width: "100%" }}>
+                  <Flex justify="space-between" align="center">
+                    <Typography.Text type="secondary">
+                      Order Total
+                    </Typography.Text>
+                    <Typography.Text>₹{orderDetails.price}</Typography.Text>
+                  </Flex>
+                  <Flex justify="space-between" align="center">
+                    <Typography.Text type="secondary">
+                      Tax Amount
+                    </Typography.Text>
+                    <Typography.Text>₹{orderDetails.taxes}</Typography.Text>
+                  </Flex>
+                  <Flex justify="space-between" align="center">
+                    <Typography.Text type="secondary">
+                      Delivery Charge
+                    </Typography.Text>
+                    <Typography.Text>
+                      ₹{orderDetails.deliveryCharges}
+                    </Typography.Text>
+                  </Flex>
+                  {orderDetails.discount > 0 && (
+                    <Flex justify="space-between" align="center">
+                      <Tooltip
+                        title={`Coupon Code: ${orderDetails.couponCode}`}
+                      >
+                        <Typography.Text type="secondary">
+                          Discount Amount <InfoCircleOutlined size={10} />
+                        </Typography.Text>
+                      </Tooltip>
+                      <Typography.Text>
+                        - ₹{orderDetails.discount}
+                      </Typography.Text>
+                    </Flex>
+                  )}
+                  <Flex justify="space-between" align="center">
+                    <Typography.Text strong>
+                      <strong>Final Total</strong>
+                    </Typography.Text>
+                    <Typography.Text strong>
+                      ₹ {orderDetails.total}
+                    </Typography.Text>
+                  </Flex>
+                </Space>
+              </Col>
+            </Row>
+          </Card>
         </Col>
         <Col span={10}>
-          <Card title="Customer Details">Card Content</Card>
+          <Card title="Customer Details">
+            <Space direction="vertical">
+              <Flex style={{ flexDirection: "column" }}>
+                <Typography.Text type="secondary">Name</Typography.Text>
+                <Typography.Text>
+                  {orderDetails.customerId.firstName}{" "}
+                  {orderDetails.customerId.lastName}
+                </Typography.Text>
+              </Flex>
+              <Flex style={{ flexDirection: "column" }}>
+                <Typography.Text type="secondary">Address</Typography.Text>
+                <Typography.Text>{orderDetails.address}</Typography.Text>
+              </Flex>
+              {orderDetails.comment && (
+                <Flex style={{ flexDirection: "column" }}>
+                  <Typography.Text type="secondary">Comments</Typography.Text>
+                  <Typography.Text>{orderDetails.comment}</Typography.Text>
+                </Flex>
+              )}
+            </Space>
+          </Card>
         </Col>
       </Row>
     </Space>
