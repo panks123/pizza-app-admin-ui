@@ -32,3 +32,4 @@ export const updateProduct = (productId: string, product: FormData) => api.put(`
 // order service
 export const getOrders = (queryString: string) => api.get(`${ORDER_SERVICE}/orders?${queryString}`);
 export const getOrderDetails = (orderId: string, queryString: string) => api.get(`${ORDER_SERVICE}/orders/${orderId}?${queryString}`);
+export const changeOrderStatus = (orderId: string, orderStatus: string) => api.patch(`${ORDER_SERVICE}/orders/change-status/${orderId}`, { status: orderStatus });

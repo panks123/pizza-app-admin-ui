@@ -6,6 +6,7 @@ import {
   Flex,
   List,
   Row,
+  Select,
   Space,
   Tag,
   Tooltip,
@@ -15,9 +16,9 @@ import { Link, useParams } from "react-router-dom";
 import { RightOutlined, InfoCircleOutlined } from "@ant-design/icons";
 import { orderStatusColors } from "../../constants";
 import { capitalize } from "lodash";
-import { useQuery } from "@tanstack/react-query";
-import { getOrderDetails } from "../../http/api";
-import { Order, PaymentStatus } from "../../types";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { changeOrderStatus, getOrderDetails } from "../../http/api";
+import { Order, OrderStatus, PaymentStatus } from "../../types";
 import { format } from "date-fns";
 
 const OrderDetails = () => {
@@ -35,6 +36,26 @@ const OrderDetails = () => {
       );
     },
   });
+
+  const queryClient = useQueryClient();
+
+  const { mutate: updateOrderStatus } = useMutation({
+    mutationKey: ["order-status", orderId],
+    mutationFn: async (status: OrderStatus) => {
+      
+      return await changeOrderStatus(orderId, status).then(
+        (res) => res.data
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["order", orderId] });
+    }
+  });
+
+  const handleOrderStatusChange = (value: OrderStatus) => {
+    updateOrderStatus(value);
+  };
+
   if (!orderDetails) {
     return <p>Cannot find this order</p>;
   }
@@ -48,6 +69,22 @@ const OrderDetails = () => {
             { title: `Order #${id}` },
           ]}
           separator={<RightOutlined />}
+        />
+
+        <Select
+          key={orderDetails.orderStatus}
+          disabled={orderDetails.orderStatus === OrderStatus.DELIVERED || orderDetails.orderStatus === OrderStatus.CANCELLED}
+          defaultValue={orderDetails.orderStatus}
+          style={{ width: 200 }}
+          onChange={handleOrderStatusChange}
+          options={[
+            { label: "Received", value: OrderStatus.RECIEVED, disabled: Object.values(OrderStatus).slice(1).includes(orderDetails.orderStatus) },
+            { label: "Confirmed", value: OrderStatus.CONFIRMED, disabled: Object.values(OrderStatus).slice(2).includes(orderDetails.orderStatus) },
+            { label: "Prepared", value: OrderStatus.PREPARED, disabled: Object.values(OrderStatus).slice(3).includes(orderDetails.orderStatus) },
+            { label: "Out for Delivery", value: OrderStatus.OUT_FOR_DELIVERY, disabled: Object.values(OrderStatus).slice(4).includes(orderDetails.orderStatus) },
+            { label: "Delivered", value: OrderStatus.DELIVERED },
+            { label: "Cancelled", value: OrderStatus.CANCELLED },
+          ]}
         />
       </Flex>
 
