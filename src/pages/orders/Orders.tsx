@@ -148,7 +148,7 @@ const Orders = () => {
         console.log("Joined in : ", data.roomId);
       });
 
-      socket.emit("join", { tenantId: user.tenant });
+      socket.emit("join", { tenantId: user.tenant.id });
 
       socket.on("order-update", (data) => {
         console.log("Recieved order-update of order: ", data); 
