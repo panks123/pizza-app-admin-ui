@@ -14,6 +14,7 @@ const OrderFilters = () => {
       return getTenants(`perPage=100&currentPage=1`).then((res) => res.data);
     },
   });
+  if(user?.role === UserRole.ADMIN) // Since currently we have only tenant Id filter
   return (
     <Card>
       <Row justify="space-between">
@@ -47,6 +48,7 @@ const OrderFilters = () => {
       </Row>
     </Card>
   );
+  else return null;
 };
 
 export default OrderFilters;

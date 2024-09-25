@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Breadcrumb, Flex, Form, Space, Table, Tag, Typography } from "antd";
 import { Link } from "react-router-dom";
 import { RightOutlined } from "@ant-design/icons";
@@ -9,8 +9,6 @@ import { getOrders } from "../../http/api";
 import { format } from "date-fns";
 import { orderStatusColors } from "../../constants";
 import { capitalize } from "lodash";
-import socket from "../../lib/socket";
-import { useAuthStore } from "../../store";
 
 const columns = [
   {
@@ -103,7 +101,6 @@ const columns = [
 ];
 
 const Orders = () => {
-  const { user } = useAuthStore();
   const [filterForm] = Form.useForm();
   const [queryParams, setQueryParams] = useState({
     limit: 10,
@@ -141,30 +138,6 @@ const Orders = () => {
     setQueryParams((prev) => ({ ...prev, ...changedFilterFields, page: 1 }));
   };
 
-  useEffect(() => {
-  console.log("useEffect", {user});
-    if (user?.tenant) {
-      socket.on("join", (data) => {
-        console.log("Joined in : ", data.roomId);
-      });
-
-      socket.emit("join", { tenantId: user.tenant.id });
-
-      socket.on("order-update", (data) => {
-        console.log("Recieved order-update of order: ", data); 
-      })
-    }
-
-    return () => {
-      if(socket.connected) {
-        console.log("Disconnecting socket connection");
-        socket.off("join");
-        socket.off("order-update");
-        // socket.disconnect();
-      }
-    };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <Space direction="vertical" size="large" style={{ width: "100%" }}>
