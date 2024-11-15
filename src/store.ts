@@ -1,5 +1,4 @@
 import { create } from "zustand";
-import { devtools } from "zustand/middleware";
 
 interface Tenant {
     id: number,
@@ -21,8 +20,8 @@ interface AuthState {
     logout: () => void
 }
 
-export const useAuthStore = create<AuthState>(devtools((set) => ({
+export const useAuthStore = create<AuthState>((set) => ({
     user: null,
     setUser: (user) => set({ user }) ,
     logout: () => set({ user: null })
-})))
+}));
