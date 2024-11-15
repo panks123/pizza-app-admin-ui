@@ -13,7 +13,7 @@ import {
   theme,
   notification
 } from "antd";
-import Logo from "../components/icons/Logo";
+import Logo from "../components/icons/AppLogo";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { logout as logoutApi } from "../http/api";
 import { getRoleBasedNavItems } from "./navItems";
